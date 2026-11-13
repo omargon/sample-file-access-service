@@ -1,9 +1,13 @@
 import express, { Request, Response, NextFunction } from 'express';
+import { sampleRouter } from './routes/sample.routes';
 import { ErrorResponse } from './types';
 
 const app = express();
 
 app.use(express.json());
+
+// Routes
+app.use(sampleRouter);
 
 // 404 handler for unknown endpoints
 app.use((_req: Request, res: Response<ErrorResponse>) => {

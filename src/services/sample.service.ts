@@ -1,6 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import { store } from '../store';
-import { Sample, FileRecord, RegisterSampleResponse, FileSummary } from '../types';
+import { Sample, FileRecord, RegisterSampleResponse, FileSummary, GrantAccessResponse } from '../types';
+import { NotFoundError, ForbiddenError } from '../errors';
 
 export class SampleService {
   public createSample(
@@ -45,6 +46,35 @@ export class SampleService {
       sampleId,
       sampleName,
       files: filesSummary,
+    };
+  }
+
+  public grantAccess(
+    requesterId: string,
+    sampleId: string,
+    targetUserId: string
+  ): GrantAccessResponse {
+    const sample = store.getSample(sampleId);
+    if (!sample) {
+      throw new NotFoundError();
+    }
+
+    if (sample.ownerId !== requesterId) {
+      throw new ForbiddenError();
+    }
+
+    const targetUser = store.getUser(targetUserId);
+    if (!targetUser) {
+      throw new NotFoundError();
+    }
+
+    sample.grantedUserIds.add(targetUserId);
+    store.saveSample(sample);
+
+    return {
+      userId: targetUserId,
+      sampleId,
+      message: 'Access granted',
     };
   }
 }

@@ -1,5 +1,6 @@
 import express, { Request, Response, NextFunction } from 'express';
 import { sampleRouter } from './routes/sample.routes';
+import { AppError } from './errors';
 import { ErrorResponse } from './types';
 
 const app = express();
@@ -17,6 +18,10 @@ app.use((_req: Request, res: Response<ErrorResponse>) => {
 // Global error handler
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 app.use((err: unknown, _req: Request, res: Response<ErrorResponse>, _next: NextFunction) => {
+  if (err instanceof AppError) {
+    res.status(err.statusCode).json({ reason: err.reason });
+    return;
+  }
   res.status(500).json({ reason: 'Internal service error, please try again' });
 });
 

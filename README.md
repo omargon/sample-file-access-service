@@ -276,14 +276,14 @@ _(Expected: `403 Forbidden` with `{"reason":"User lacks permission"}`)_
 ### Assumptions Made
 
 - **Trusted Pipeline**: The QC pipeline is an internal trusted service identified by a dedicated API key (`pipeline-key`).
+- **No file upload**: No upload or transfer mechanism was requested at this point.
 - **Download Expiration**: Set to 24 hours by default.
 - **Duplication**: As noted in the requirements, sample and file name duplications are permitted and unmanaged for this POC.
 
 ### Known Weaknesses
 
 - SQLite single-file write concurrency: SQLite manages concurrent reads well with WAL mode, but high-volume write concurrency is limited compared to client-server RDBMS (PostgreSQL).
-- Single-node deployment: A local SQLite file is bounded to a single machine/container volume.
-- Static plain-text API keys without rate limiting or rotation.
+- Static API keys without rate limiting or rotation.
 
 ### What Would Be Done With More Time
 
@@ -291,4 +291,4 @@ _(Expected: `403 Forbidden` with `{"reason":"User lacks permission"}`)_
 - **Real Object Storage & Direct File Uploads**: Integrate with AWS S3 or Google Cloud Storage to generate genuine presigned download URLs as well as presigned upload URLs (or multipart upload sessions). This would allow clients and sequencing instruments to upload large file payloads directly to cloud bucket storage, offloading bandwidth-heavy I/O from the API service and triggering asynchronous QC pipelines via bucket event notifications.
 - **Robust Auth & RBAC**: Integrate JWT/OIDC authentication with granular role-based access control.
 - **OpenAPI / Swagger Spec**: Provide auto-generated interactive OpenAPI/Swagger documentation.
-- **Observability**: Add structured JSON logging (Pino/Winston), request correlation IDs, and Prometheus metrics.
+- **Observability**: Add structured JSON logging, request correlation IDs, and metrics.

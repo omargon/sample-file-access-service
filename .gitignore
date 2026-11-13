@@ -1,2 +1,8 @@
 # Dependencies
 node_modules/
+
+# SQLite Database
+data/
+*.db
+*.db-wal
+*.db-shm

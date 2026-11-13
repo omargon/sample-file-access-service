@@ -13,6 +13,17 @@ export class SampleService {
     const fileIds: string[] = [];
     const filesSummary: FileSummary[] = [];
 
+    const sample: Sample = {
+      id: sampleId,
+      name: sampleName,
+      ownerId,
+      fileIds,
+      grantedUserIds: new Set<string>(),
+    };
+
+    // Save sample first so foreign key constraints on sample_files are satisfied
+    store.saveSample(sample);
+
     if (Array.isArray(fileNames)) {
       for (const fileName of fileNames) {
         const fileId = `file_${randomUUID()}`;
@@ -31,16 +42,6 @@ export class SampleService {
         });
       }
     }
-
-    const sample: Sample = {
-      id: sampleId,
-      name: sampleName,
-      ownerId,
-      fileIds,
-      grantedUserIds: new Set<string>(),
-    };
-
-    store.saveSample(sample);
 
     return {
       sampleId,

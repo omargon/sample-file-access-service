@@ -1,5 +1,6 @@
 import express, { Request, Response, NextFunction } from 'express';
 import { sampleRouter } from './routes/sample.routes';
+import { fileRouter } from './routes/file.routes';
 import { AppError } from './errors';
 import { ErrorResponse } from './types';
 
@@ -9,6 +10,7 @@ app.use(express.json());
 
 // Routes
 app.use(sampleRouter);
+app.use(fileRouter);
 
 // 404 handler for unknown endpoints
 app.use((_req: Request, res: Response<ErrorResponse>) => {
